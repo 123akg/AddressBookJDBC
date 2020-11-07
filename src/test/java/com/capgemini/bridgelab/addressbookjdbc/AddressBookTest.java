@@ -1,12 +1,18 @@
 package com.capgemini.bridgelab.addressbookjdbc;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
+import java.util.logging.Logger;
 
 public class AddressBookTest {
+	
+	private static Logger log = Logger.getLogger(AddressBookTest.class.getName());
 
 	@Test
 	public void contactsWhenRetrievedFromDB_ShouldMatchCount() {
@@ -52,5 +58,25 @@ public class AddressBookTest {
 				"sri@gmail", "officeContacts", "colleague", date);
 		boolean result = addressBookService.checkConatctDetailsInSyncWithDB("sri");
 		Assert.assertTrue(result);
+	}
+	
+	@Test
+	public void givenNewContacts_WhenAdded_ShouldMatchEntries() {
+		PersonInfo[] arrayOfContacts= {
+				new PersonInfo("rishabh", "singh", "PK", "jharia", "agra", "123566", "9132532252",
+				"rishabh@gmail", "contacts", "colleague", LocalDate.now()),
+				new PersonInfo("mohit", "dhand", "ramni", "delhi", "delhi", "112535", "9243592252",
+						"mohit@gmail", "frndcontacts", "friend", LocalDate.now()),
+				new PersonInfo("yash", "sharma", "ghat", "delhi", "delhi", "112585", "9095672252",
+						"yash@gmail", "offcontacts", "colleague", LocalDate.now())
+		};
+		AddressBookService addressBookService = new AddressBookService();
+		addressBookService.readContactData();
+		Instant start = Instant.now();
+		addressBookService.addEmployeeToPayrollWithThreads(Arrays.asList(arrayOfContacts));
+		Instant end = Instant.now();
+		log.info("Duration with thread : " + Duration.between(start, end));
+		List<PersonInfo> contactList = addressBookService.readContactData();
+		Assert.assertEquals(5, contactList.size());
 	}
 }
