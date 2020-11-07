@@ -22,7 +22,7 @@ public class AddressBookDBService {
 	public Connection getConnection() throws SQLException {
 		String jdbcURL = "jdbc:mysql://localhost:3306/address_book_service?useSSL=false";
 		String userName = "root";
-		String password = "Abhi@123";
+		String password = "Abhi@1234";
 		Connection connection;
 		System.out.println("connecting to database: " + jdbcURL);
 		connection = DriverManager.getConnection(jdbcURL, userName, password);
@@ -126,5 +126,22 @@ public class AddressBookDBService {
 						+ "on c.address_book_name=abd.address_book_name where date_added between '%s' AND '%s'; ",
 				Date.valueOf(startDate), Date.valueOf(endDate));
 		return this.getContactDetailsUsingSqlQuery(sql);
+	}
+
+	public Map<String, Integer> getContactByCity() {
+		String sql = "SELECT city, count(first_name) as count from contact_details group by city; ";
+		Map<String, Integer> contactByCityMap = new HashMap<>();
+		try (Connection connection = addressBookDBService.getConnection()) {
+			Statement statement = connection.createStatement();
+			ResultSet result = statement.executeQuery(sql);
+			while (result.next()) {
+				String city = result.getString("city");
+				Integer count = result.getInt("count");
+				contactByCityMap.put(city,count);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return contactByCityMap;
 	}
 }

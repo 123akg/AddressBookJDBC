@@ -2,6 +2,7 @@ package com.capgemini.bridgelab.addressbookjdbc;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -31,5 +32,14 @@ public class AddressBookTest {
 		LocalDate endDate = LocalDate.now();
 		List<PersonInfo> contactList = addressBookService.readContactDataForDateRange(startDate, endDate);
 		Assert.assertEquals(2, contactList.size());
+	}
+	
+	@Test
+	public void givenContacts_RetrieveNumberOfContacts_ByCityOrState() {
+		AddressBookService addressBookService = new AddressBookService();
+		addressBookService.readContactData();
+		Map<String, Integer> contactByCityMap = addressBookService.readContactByCityOrState();
+		Integer count = 1;
+		Assert.assertEquals(count, contactByCityMap.get("hajipur"));
 	}
 }
