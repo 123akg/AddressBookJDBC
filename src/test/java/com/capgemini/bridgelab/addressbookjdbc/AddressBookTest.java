@@ -42,4 +42,15 @@ public class AddressBookTest {
 		Integer count = 1;
 		Assert.assertEquals(count, contactByCityMap.get("hajipur"));
 	}
+	
+	@Test
+	public void givenNewContact_WhenAdded_ShouldSyncWithDB() {
+		AddressBookService addressBookService = new AddressBookService();
+		addressBookService.readContactData();
+		LocalDate date = LocalDate.now();
+		addressBookService.addContactToAddressBook("sri", "gannu", "shsh", "hajipur", "hajipur", "123145", "9897572552",
+				"sri@gmail", "officeContacts", "colleague", date);
+		boolean result = addressBookService.checkConatctDetailsInSyncWithDB("sri");
+		Assert.assertTrue(result);
+	}
 }
